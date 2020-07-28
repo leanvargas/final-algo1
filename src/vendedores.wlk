@@ -52,7 +52,7 @@ class Vendedor {
 }
 
 class Fijo inherits Vendedor {
-	var property viveEn
+	var property viveEn //ciudad
 	const property esPersonaFisica = true	
 	
 	
@@ -88,24 +88,19 @@ class Comercio inherits Vendedor{
 		return tieneSucursalEn.contains(ciudad)
 	}
 	
+	// hacer esInfluyente
 	method esInfluyente(){
-		return true
+		return tieneSucursalEn.size() >= 5 or self.alMenos3Provincias()
 	}
 	
-	//override method esInfluyente(){
-	//	return tieneSucursalEn.size() >= 5 or self.alMenos3Provincias()
-	//}
+	method alMenos3Provincias(){
+		return self.provincias().asSet().size() >= 3 
+	}
 	
-	//method alMenos3Provincias(){
-	//	return self.provincias().forEach{ prov => prov} 
-	//}
+	method provincias(){
+		return tieneSucursalEn.map{ ciudad => ciudad.provincia()}
+	}
 	
-	//method provincias(){
-	//	var provincias = tieneSucursalEn.map{ ciudad => ciudad.provincia()}
-	//}
-	
-	
-	// ciudades = [la plata, san rafael]
 
 }
 
@@ -166,4 +161,3 @@ object clienteHumanista {
 		return vendedor.esPersonaFisica()
 	}
 }
-
