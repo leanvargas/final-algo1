@@ -17,14 +17,10 @@ describe "Tests de vendedores"{
     const certNoProd = new Certificacion(puntos=30,esProducto=false)
     //vendedores
     const fijo = new Fijo(certificaciones=[certProd1],viveEn=LaPlata)
-    const viajante = new Viajante(certificaciones=[certProd1,certNoProd],habilitadoEn=BuenosAires)
+    const viajante = new Viajante(certificaciones=[certProd1,certNoProd],habilitadoEn=[BuenosAires])
     const comercio = new Comercio(certificaciones=[certProd1,certProd2,certNoProd],tieneSucursalEn=[LasLenias,SanRafael])
 
-    fixture {
-      //Agrego ciudades
-      BuenosAires.addCiudad(CABA)
-    }
-    
+
     test "Vendedor viajante puede trabajar en CABA estando habilitado en Buenos Aires" {
         assert.that(viajante.puedeTrabajarEn(CABA))
     }

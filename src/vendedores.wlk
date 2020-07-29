@@ -1,25 +1,10 @@
 class UserException inherits Exception {}
 
 class Provincia {
-	const property nombre
-	const property poblacion = 10000000
-	var ciudades = []
-
-	method ciudades(){
-		return ciudades
-	}
-	
-	method addCiudad(ciudad){
-		ciudades.add(ciudad)
-	}
-	
-	method tieneCiudad(ciudad){
-		return ciudades.contains(ciudad)
-	}
+	var property poblacion = 10000000
 }
 
 class Ciudad {
-	const property nombre
 	const property provincia
 }
 
@@ -70,7 +55,7 @@ class Fijo inherits Vendedor {
 
 
 	method puedeTrabajarEn(ciudad){
-		return ciudad == viveEn
+		return ciudad.equals(viveEn)
 	}
 
 	method esInfluyente(){
@@ -92,7 +77,7 @@ class Viajante inherits Vendedor {
 
 
 	method puedeTrabajarEn(ciudad){
-		return habilitadoEn.any{ prov => prov.tieneCiudad(ciudad)}
+		return habilitadoEn.contains(ciudad.provincia())
 	}
 
 	method esInfluyente(){
