@@ -3,8 +3,16 @@ class UserException inherits Exception {}
 class Provincia {
 	const property nombre
 	const property poblacion = 10000000
-	var property ciudades = []
+	var ciudades = []
 
+	method ciudades(){
+		return ciudades
+	}
+	
+	method addCiudad(ciudad){
+		ciudades.add(ciudad)
+	}
+	
 	method tieneCiudad(ciudad){
 		return ciudades.contains(ciudad)
 	}
@@ -16,8 +24,8 @@ class Ciudad {
 }
 
 class Certificacion {
-	var property puntos = 10
-	var property esProducto = true
+	const property puntos = 10
+	const property esProducto = true
 }
 
 class Vendedor {
