@@ -2,26 +2,83 @@ import vendedores.*
 
 describe "Tests de vendedores"{
     //provincias
-    const BuenosAires = new Provincia(nombre="Buenos Aires",poblacion=11000000)
-    const Cordoba = new Provincia(nombre="Cordoba",poblacion=5000000)
-    const Mendoza = new Provincia(nombre="Mendoza",poblacion=200000)
+    const buenosAires = new Provincia(poblacion=11000000)
+    const cordoba = new Provincia(poblacion=5000000)
+    const mendoza = new Provincia(poblacion=200000)
     //Ciudades
-    const CABA = new Ciudad(nombre="CABA",provincia=BuenosAires)
-    const LaPlata= new Ciudad(nombre="La Plata",provincia=BuenosAires)
-    const SanRafael = new Ciudad(nombre="San Rafael",provincia=Cordoba)
-    const LasLenias = new Ciudad(nombre="Las leñas",provincia=Mendoza)
+    const caba = new Ciudad(provincia=buenosAires)
+    const laPlata= new Ciudad(provincia=buenosAires)
+    const tigre= new Ciudad(provincia=buenosAires)
+    const sanRafael = new Ciudad(provincia=cordoba)
+    const lasLenias = new Ciudad(provincia=mendoza)
    
     //certificaciones
     const certProd1 = new Certificacion(puntos=10)
     const certProd2 = new Certificacion(puntos=20)
     const certNoProd = new Certificacion(puntos=30,esProducto=false)
     //vendedores
-    const fijo = new Fijo(certificaciones=[certProd1],viveEn=LaPlata)
-    const viajante = new Viajante(certificaciones=[certProd1,certNoProd],habilitadoEn=[BuenosAires])
-    const comercio = new Comercio(certificaciones=[certProd1,certProd2,certNoProd],tieneSucursalEn=[LasLenias,SanRafael])
+    const fijo = new Fijo(certificaciones=[certProd1],viveEn=laPlata)
+    const viajante = new Viajante(certificaciones=[certProd1,certNoProd],habilitadoEn=[buenosAires])
+    const comercio = new Comercio(certificaciones=[certProd1,certProd2,certNoProd],tieneSucursalEn=[caba,laPlata,lasLenias,sanRafael])
+    
+    //Centro de distribucion
+    const centro = new CentroDeDistribucion(ciudadDelCentro=sanRafael, vendedores=#{fijo, viajante})
 
 
     test "Vendedor viajante puede trabajar en CABA estando habilitado en Buenos Aires" {
-        assert.that(viajante.puedeTrabajarEn(CABA))
+        assert.that(viajante.puedeTrabajarEn(caba))
+    }
+    
+    test "El comercio es versatil" {
+    	assert.that(comercio.esVersatil())
+    }
+    
+    test "Comercio con 4 ciudades y en 3 provincias distintas es influyente" {
+    	assert.that(comercio.esInfluyente())
+    }
+    
+    test "El viajante habilitado en cordoba y mendoza no es influyente" {
+    	viajante.habilitadoEn([cordoba, mendoza])
+    	assert.notThat(viajante.esInfluyente())
+    }
+    
+    test "Comercio con 4 ciudades y en 2 provincias distintas no es influyente" {
+    	comercio.tieneSucursalEn([caba,laPlata,lasLenias,tigre])
+    	assert.notThat(comercio.esInfluyente())
+    }
+    
+    test "Agregar un vendedor que ya está en el centro de distribucion arroja error" {
+    	assert.throwsExceptionWithMessage("El vendedor ya se encuentra en este centro", {centro.agregarVendedor(fijo)})
+    }
+    
+    test "El centro estando en sanRafael y teniendo un vendedor fijo que vive en laPlata, puede cubrir la ciudad de laPlata" {
+    	assert.that(centro.puedeCubrir(laPlata))
+    }
+    
+    test "El centro con un vendedor fijo (10 puntos cert), un viajante (40 puntos certs) y un comercio (50 puntos certs) tiene como estrella al comercio" {
+    	centro.agregarVendedor(comercio)
+    	assert.equals(centro.vendedorEstrella(), comercio)
+    }
+    
+    test "El centro agrega la certProd2 a sus vendedores, el fijo y el viajante" {
+    	centro.repartirCertificacion(certProd2)
+    	assert.that(fijo.tieneCertificacion(certProd2))
+    	assert.that(viajante.tieneCertificacion(certProd2))
+    }
+    
+    test "Un vendedor fijo que vive en laPlata no tiene afinidad por el centro que está ubicado en sanRafael" {
+    	assert.notThat(fijo.tieneAfinidad(centro))
+    }
+    
+    test "Un comercio que es versatil y tiene sucursal en lasLenias, es candidato de un centro que está ubicado en sanRafael" {
+    	comercio.tieneSucursalEn([lasLenias])
+    	comercio.esCandidato(centro)
+    }
+    
+    test "Un vendedor viajante con 2 cretificaciones en productos no es versatil" {
+    	assert.notThat(viajante.esVersatil())
+    }
+    test "Un cliente inseguro puede ser atendido por un comercio versatil y firme" {
+    	assert.that(clienteInseguro.puedeSerAtendido(comercio))
     }
 }

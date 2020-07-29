@@ -1,7 +1,7 @@
 class UserException inherits Exception {}
 
 class Provincia {
-	var property poblacion = 10000000
+	var property poblacion
 }
 
 class Ciudad {
@@ -9,7 +9,7 @@ class Ciudad {
 }
 
 class Certificacion {
-	const property puntos = 10
+	const property puntos
 	const property esProducto = true
 }
 
@@ -47,6 +47,10 @@ class Vendedor {
 	method esCandidato(vendedor){
 		return self.esVersatil()
 	}
+		
+	method tieneCertificacion(certificacion){
+		return certificaciones.contains(certificacion)
+	}
 }
 
 class Fijo inherits Vendedor {
@@ -62,12 +66,12 @@ class Fijo inherits Vendedor {
 		return false
 	}
 
-	method afinidad(centro){
+	method tieneAfinidad(centro){
 		return self.puedeTrabajarEn(centro.ciudadDelCentro())
 	}
 
 	override method esCandidato(vendedor){
-		return super(vendedor) and self.afinidad(vendedor)
+		return super(vendedor) and self.tieneAfinidad(vendedor)
 	}
 }
 
@@ -84,13 +88,14 @@ class Viajante inherits Vendedor {
 		return habilitadoEn.sum{ prov => prov.poblacion()} >= 10000000
 	}
 
-	method afinidad(centro){
+	method tieneAfinidad(centro){
 		return self.puedeTrabajarEn(centro.ciudadDelCentro())
 	}
 
 	override method esCandidato(vendedor){
-		return super(vendedor) and self.afinidad(vendedor)
+		return super(vendedor) and self.tieneAfinidad(vendedor)
 	}
+
 }
 
 class Comercio inherits Vendedor{
@@ -114,7 +119,7 @@ class Comercio inherits Vendedor{
 		return tieneSucursalEn.map{ ciudad => ciudad.provincia()}
 	}
 
-	method afinidad(centro){
+	method tieneAfinidad(centro){
 		return self.puedeTrabajarEn(centro.ciudadDelCentro()) and self.alMenosUnaCiudad(centro)
 	}
 
@@ -123,7 +128,7 @@ class Comercio inherits Vendedor{
 	}
 
 	override method esCandidato(vendedor){
-		return super(vendedor) and self.afinidad(vendedor)
+		return super(vendedor) and self.tieneAfinidad(vendedor)
 	}
 
 }
@@ -133,7 +138,7 @@ class CentroDeDistribucion {
 	var property ciudadDelCentro
 
 	method agregarVendedor(vendedor){
-		if (!vendedores.any(vendedor)){
+		if (!vendedores.contains(vendedor)){
 			vendedores.add(vendedor)
 		}else{
 			throw new UserException(message = "El vendedor ya se encuentra en este centro")
