@@ -176,6 +176,14 @@ object clienteHumanista {
 	}
 }
 
+object clientes{
+	const clientes = [clienteInseguro, clienteDetallista, clienteHumanista]
+	
+	method elComercioPuedeAtenderlos(comercio){
+		return clientes.all{ cliente => cliente.puedeSerAtendido(comercio)}
+	}
+}
+
 
 
 

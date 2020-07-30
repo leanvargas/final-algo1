@@ -84,6 +84,11 @@ describe "Tests de vendedores"{
     }
     test "Un cliente inseguro puede ser atendido por un comercio versatil y firme" {
     	assert.that(clienteInseguro.puedeSerAtendido(comercio))
+    	
+    }
+    
+    test "Un comercio puede atender a todos los clientes"{
+    	assert.notThat(clientes.elComercioPuedeAtenderlos(comercio))
     }
 
 }
