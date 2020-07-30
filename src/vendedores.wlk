@@ -76,7 +76,7 @@ class Fijo inherits Vendedor {
 }
 
 class Viajante inherits Vendedor {
-	var property habilitadoEn = [] //provincias
+	var property habilitadoEn = #{} //provincias
 	const property esPersonaFisica = true
 
 
@@ -118,13 +118,13 @@ class Comercio inherits Vendedor{
 	method provincias(){
 		return tieneSucursalEn.map{ ciudad => ciudad.provincia()}
 	}
-
-	method tieneAfinidad(centro){
-		return self.puedeTrabajarEn(centro.ciudadDelCentro()) and self.alMenosUnaCiudad(centro)
+	
+	method alMenosUnaCiudadNoPuedeCubrir(centro){
+		return tieneSucursalEn.any{ ciudad => !centro.puedeCubrir(ciudad)}
 	}
-
-	method alMenosUnaCiudad(centro){
-		return tieneSucursalEn.any{ ciudad => ciudad == centro.ciudadDelCentro()}
+	
+	method tieneAfinidad(centro){
+		return self.puedeTrabajarEn(centro.ciudadDelCentro()) and self.alMenosUnaCiudadNoPuedeCubrir(centro)
 	}
 
 	override method esCandidato(vendedor){
@@ -154,7 +154,7 @@ class CentroDeDistribucion {
 	}
 
 	method vendedoresGenericos(){
-		return vendedores.filter{ vendedor => vendedor.tieneUnaCertNoProductos()}
+		return vendedores.filter{ vendedor => vendedor.tieneUnaCertNoProducto()}
 	}
 
 	method esRobusto(){

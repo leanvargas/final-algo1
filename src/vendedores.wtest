@@ -18,7 +18,7 @@ describe "Tests de vendedores"{
     const certNoProd = new Certificacion(puntos=30,esProducto=false)
     //vendedores
     const fijo = new Fijo(certificaciones=[certProd1],viveEn=laPlata)
-    const viajante = new Viajante(certificaciones=[certProd1,certNoProd],habilitadoEn=[buenosAires])
+    const viajante = new Viajante(certificaciones=[certProd1,certNoProd],habilitadoEn=#{buenosAires})
     const comercio = new Comercio(certificaciones=[certProd1,certProd2,certNoProd],tieneSucursalEn=[caba,laPlata,lasLenias,sanRafael])
     
     //Centro de distribucion
@@ -38,7 +38,7 @@ describe "Tests de vendedores"{
     }
     
     test "El viajante habilitado en cordoba y mendoza no es influyente" {
-    	viajante.habilitadoEn([cordoba, mendoza])
+    	viajante.habilitadoEn(#{cordoba, mendoza})
     	assert.notThat(viajante.esInfluyente())
     }
     
@@ -70,9 +70,13 @@ describe "Tests de vendedores"{
     	assert.notThat(fijo.tieneAfinidad(centro))
     }
     
-    test "Un comercio que es versatil y tiene sucursal en lasLenias, es candidato de un centro que está ubicado en sanRafael" {
-    	comercio.tieneSucursalEn([lasLenias])
-    	comercio.esCandidato(centro)
+    test "Un comercio que tiene 3 certificaciones, 2 de productos y una que no es de productos, es versatil" {
+    	assert.that(comercio.esVersatil())
+    }
+    
+    test "Un comercio que es versatil y tiene sucursal en lasLenias, es candidato de un centro que está ubicado en sanRafael, con vendedor viajante habilitado en buenosAires y un fijo que vive en laPlata" {
+    	comercio.tieneSucursalEn([lasLenias,sanRafael])
+    	assert.that(comercio.esCandidato(centro))
     }
     
     test "Un vendedor viajante con 2 cretificaciones en productos no es versatil" {
@@ -81,4 +85,5 @@ describe "Tests de vendedores"{
     test "Un cliente inseguro puede ser atendido por un comercio versatil y firme" {
     	assert.that(clienteInseguro.puedeSerAtendido(comercio))
     }
+
 }
