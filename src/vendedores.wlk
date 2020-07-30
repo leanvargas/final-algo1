@@ -45,12 +45,19 @@ class Vendedor {
 	}
 
 	method esCandidato(vendedor){
-		return self.esVersatil()
+		return self.esVersatil() and self.tieneAfinidad(vendedor)
 	}
 		
 	method tieneCertificacion(certificacion){
 		return certificaciones.contains(certificacion)
 	}
+	
+	method puedeTrabajarEn(ciudad)
+	
+	method tieneAfinidad(centro){
+		return self.puedeTrabajarEn(centro.ciudadDelCentro())
+	}
+	
 }
 
 class Fijo inherits Vendedor {
@@ -58,7 +65,7 @@ class Fijo inherits Vendedor {
 	const property esPersonaFisica = true
 
 
-	method puedeTrabajarEn(ciudad){
+	override method puedeTrabajarEn(ciudad){
 		return ciudad.equals(viveEn)
 	}
 
@@ -66,13 +73,6 @@ class Fijo inherits Vendedor {
 		return false
 	}
 
-	method tieneAfinidad(centro){
-		return self.puedeTrabajarEn(centro.ciudadDelCentro())
-	}
-
-	override method esCandidato(vendedor){
-		return super(vendedor) and self.tieneAfinidad(vendedor)
-	}
 }
 
 class Viajante inherits Vendedor {
@@ -80,20 +80,12 @@ class Viajante inherits Vendedor {
 	const property esPersonaFisica = true
 
 
-	method puedeTrabajarEn(ciudad){
+	override method puedeTrabajarEn(ciudad){
 		return habilitadoEn.contains(ciudad.provincia())
 	}
 
 	method esInfluyente(){
 		return habilitadoEn.sum{ prov => prov.poblacion()} >= 10000000
-	}
-
-	method tieneAfinidad(centro){
-		return self.puedeTrabajarEn(centro.ciudadDelCentro())
-	}
-
-	override method esCandidato(vendedor){
-		return super(vendedor) and self.tieneAfinidad(vendedor)
 	}
 
 }
@@ -103,7 +95,7 @@ class Comercio inherits Vendedor{
 	const property esPersonaFisica = false
 
 
-	method puedeTrabajarEn(ciudad){
+	override method puedeTrabajarEn(ciudad){
 		return tieneSucursalEn.contains(ciudad)
 	}
 
@@ -123,12 +115,8 @@ class Comercio inherits Vendedor{
 		return tieneSucursalEn.any{ ciudad => !centro.puedeCubrir(ciudad)}
 	}
 	
-	method tieneAfinidad(centro){
-		return self.puedeTrabajarEn(centro.ciudadDelCentro()) and self.alMenosUnaCiudadNoPuedeCubrir(centro)
-	}
-
-	override method esCandidato(vendedor){
-		return super(vendedor) and self.tieneAfinidad(vendedor)
+	override method tieneAfinidad(centro){
+		return super(centro) and self.alMenosUnaCiudadNoPuedeCubrir(centro)
 	}
 
 }
